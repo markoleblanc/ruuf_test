@@ -27,6 +27,22 @@
             padding: 0 10px;
             border-bottom: none;
         }
+
+        #techo {
+            position: relative;
+            border: 1px solid black;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .panel {
+            border: 1px solid blue;
+            box-sizing: border-box;
+            position: absolute;
+            align-content: center;
+            text-align: center;
+            align-items: center;
+        }
     </style>
     </style>
 </head>
@@ -105,6 +121,24 @@
                 }
             }
             console.log(paneles)
+
+            const techo = document.getElementById('techo');
+            techo.innerHTML = '';
+            techo.style.width = `${techo_ancho * 100}px`;
+            techo.style.height = `${techo_alto * 100}px`;
+
+
+            // Dibujar los paneles solares
+            for (let panel of paneles) {
+                const div = document.createElement('div');
+                div.className = 'panel';
+                div.style.width = `${panel.width * 100}px`;
+                div.style.height = `${panel.height * 100}px`;
+                div.style.left = `${panel.x * 100}px`;
+                div.style.top = `${panel.y * 100}px`;
+                div.textContent = panel.num;
+                techo.appendChild(div);
+            }
         
         }
 
