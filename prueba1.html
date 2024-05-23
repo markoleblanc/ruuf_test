@@ -129,6 +129,65 @@
                 return;
             }
 
+            //Orientacion Por Defecto
+            let opc1 = evaluaOpcion(techo_alto, techo_ancho, panel_alto, panel_ancho)
+            //Orientacion Girada (intercambia alto por ancho del panel)
+            let opc2 = evaluaOpcion(techo_alto, techo_ancho, panel_ancho, panel_alto)
+
+
+            if (opc1.length > opc2.length) {
+                paneles = opc1
+            } else {
+                paneles = opc2
+            }
+
+
+
+
+
+
+            if(paneles.length){
+                dibujar(techo_ancho, techo_alto, paneles)
+                const area_techo = techo_alto * techo_ancho
+                const area_utilizada = (paneles.length) * (panel_ancho * panel_alto)
+                const porc_utilizacion = (area_utilizada * 100 )/area_techo;
+                document.getElementById('respuesta').innerHTML = `Cantidad máxima de paneles que caben: ${paneles.length}<br>
+                Area del Techo : ${area_techo}m²<br>
+                Area Utilizada : ${area_utilizada}m²<br>
+                Porcentaje Utilización : ${porc_utilizacion.toFixed(1)} %`;
+            }else{
+                document.getElementById('respuesta').innerHTML = 'Segun esas medidas, no cabe ningun panel completo en el techo.';
+            }
+
+        
+        }
+
+        function dibujar(techo_ancho, techo_alto, panelesFinal) {
+
+            const techo = document.getElementById('techo');
+            techo.innerHTML = '';
+            techo.style.width = `${techo_ancho * 100}px`;
+            techo.style.height = `${techo_alto * 100}px`;
+
+
+            // Dibujar los paneles solares
+            for (let panel of panelesFinal) {
+                const div = document.createElement('div');
+                div.className = 'panel';
+                div.style.width = `${panel.width * 100}px`;
+                div.style.height = `${panel.height * 100}px`;
+                div.style.left = `${panel.x * 100}px`;
+                div.style.top = `${panel.y * 100}px`;
+                div.textContent = panel.num;
+                techo.appendChild(div);
+            }
+
+            }
+
+        function evaluaOpcion(techo_alto, techo_ancho, panel_alto, panel_ancho) {
+            
+            let panelNum = 1;
+            let paneles = [];
 
             // Veo cuantos Paneles caben en el alto del techo
             for (let y = 0; y < Math.floor(techo_alto/panel_alto); y++) {
@@ -151,24 +210,8 @@
                 }
             }
 
-            const techo = document.getElementById('techo');
-            techo.innerHTML = '';
-            techo.style.width = `${techo_ancho * 100}px`;
-            techo.style.height = `${techo_alto * 100}px`;
-
-
-            // Dibujar los paneles solares
-            for (let panel of paneles) {
-                const div = document.createElement('div');
-                div.className = 'panel '+ panel.orientacion;
-                div.style.width = `${panel.width * 100}px`;
-                div.style.height = `${panel.height * 100}px`;
-                div.style.left = `${panel.x * 100}px`;
-                div.style.top = `${panel.y * 100}px`;
-                div.textContent = panel.num + ' (' + panel.orientacion+')';
-                techo.appendChild(div);
-            }
-        
+            return paneles;
+            
         }
 
         function rectangulosSuperpuestos(x, y, ancho, alto, rectangulos) {
