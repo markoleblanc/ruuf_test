@@ -82,12 +82,29 @@
         }
 
         function calcularPaneles() {
-            console.log("Calculando paneles")
+
+            let panelNum = 1;
+            let paneles = []
 
             const techo_ancho = getInputValue('techo_ancho');
             const techo_alto = getInputValue('techo_alto');
             const panel_ancho = getInputValue('panel_ancho');
             const panel_alto = getInputValue('panel_alto');
+
+            if (isNaN(techo_ancho) || isNaN(techo_alto) || isNaN(panel_ancho) || isNaN(panel_alto)) {
+                document.getElementById('respuesta').innerHTML = 'Por favor, ingrese todos los valores correctamente.';
+                return;
+            }
+
+
+            // Veo cuantos Paneles caben en el alto del techo
+            for (let y = 0; y < Math.floor(techo_alto/panel_alto); y++) {
+                // Veo cuantos Paneles caben en el ancho del techo
+                for (let x = 0; x < Math.floor(techo_ancho/panel_ancho); x++) {
+                    paneles.push({ x: x * panel_ancho , y: y * panel_alto, width: panel_ancho, height: panel_alto, num: panelNum++ });
+                }
+            }
+            console.log(paneles)
         
         }
 
