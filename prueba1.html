@@ -114,6 +114,10 @@
             document.getElementById('respuesta').innerHTML = ''
         }
 
+        function getLongestArray(arrays) {
+            return arrays.reduce((longest, current) => current.length > longest.length ? current : longest, []);
+        }
+
         function calcularPaneles() {
 
             let panelNum = 1;
@@ -135,15 +139,7 @@
             let opc2 = evaluaOpcion(techo_alto, techo_ancho, panel_ancho, panel_alto)
 
 
-            if (opc1.length > opc2.length) {
-                paneles = opc1
-            } else {
-                paneles = opc2
-            }
-
-
-
-
+            paneles = getLongestArray([opc1, opc2]);
 
 
             if(paneles.length){
@@ -151,7 +147,12 @@
                 const area_techo = techo_alto * techo_ancho
                 const area_utilizada = (paneles.length) * (panel_ancho * panel_alto)
                 const porc_utilizacion = (area_utilizada * 100 )/area_techo;
-                document.getElementById('respuesta').innerHTML = `Cantidad máxima de paneles que caben: ${paneles.length}<br>
+                document.getElementById('respuesta').innerHTML = `
+                Cantidad paneles que caben Orientacion por Defecto: ${opc1.length}<br>
+                Cantidad paneles que caben Orientacion por Girada: ${opc2.length}<br>
+
+
+                Cantidad máxima de paneles que caben: ${paneles.length}<br>
                 Area del Techo : ${area_techo}m²<br>
                 Area Utilizada : ${area_utilizada}m²<br>
                 Porcentaje Utilización : ${porc_utilizacion.toFixed(1)} %`;
@@ -196,15 +197,15 @@
                     paneles.push({ x: x * panel_ancho , y: y * panel_alto, width: panel_ancho, height: panel_alto, num: panelNum++ ,orientacion : 'normal'});
                 }
             }
-            console.log(paneles)
 
             // Veo cuantos Paneles Rotados caben en el alto del techo
-            for (let y = 0; y < Math.floor(techo_alto/panel_ancho); y++) {
+            // Se cambia por casos en que los tamaños del panel no son multiplos del tamaño del techo
+            for (let y = 0; y <= techo_alto - panel_ancho; y++) {
                 // Veo cuantos Paneles Rotados caben en el ancho del techo
-                for (let x = 0; x < Math.floor(techo_ancho/panel_alto); x++) {
+                for (let x = 0; x <= techo_ancho - panel_alto; x++) {
 
-                    if(!rectangulosSuperpuestos(x * panel_alto, y * panel_ancho, panel_alto, panel_ancho , paneles)){
-                        paneles.push({ x: x * panel_alto , y: y * panel_ancho, width: panel_alto, height: panel_ancho, num: panelNum++ ,orientacion : 'rotado'});
+                    if(!rectangulosSuperpuestos(x , y, panel_alto, panel_ancho , paneles)){
+                        paneles.push({ x: x , y: y, width: panel_alto, height: panel_ancho, num: panelNum++ ,orientacion : 'rotado'});
                     }
                     
                 }
