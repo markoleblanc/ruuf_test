@@ -49,7 +49,11 @@
         }
 
         .rotado {
-            border: 1px dashed rgb(255, 94, 0);
+            /*border: 2px dashed rgb(255, 94, 0);*/
+            border-top: 2px dashed;
+            color:rgb(255, 94, 0);
+            background-color: rgb(240, 191, 163);
+            z-index: -10;
 
         }
     </style>
@@ -139,7 +143,11 @@
             for (let y = 0; y < Math.floor(techo_alto/panel_ancho); y++) {
                 // Veo cuantos Paneles Rotados caben en el ancho del techo
                 for (let x = 0; x < Math.floor(techo_ancho/panel_alto); x++) {
-                    paneles.push({ x: x * panel_alto , y: y * panel_ancho, width: panel_alto, height: panel_ancho, num: panelNum++ ,orientacion : 'rotado'});
+
+                    if(!rectangulosSuperpuestos(x * panel_alto, y * panel_ancho, panel_alto, panel_ancho , paneles)){
+                        paneles.push({ x: x * panel_alto , y: y * panel_ancho, width: panel_alto, height: panel_ancho, num: panelNum++ ,orientacion : 'rotado'});
+                    }
+                    
                 }
             }
 
@@ -161,6 +169,56 @@
                 techo.appendChild(div);
             }
         
+        }
+
+        function rectangulosSuperpuestos(x, y, ancho, alto, rectangulos) {
+            
+            //validar sobre los rectángulos existentes el rectángulo que deseo insertar
+            for (let i = 0; i < rectangulos.length; i++) {
+                let rect = rectangulos[i];
+
+                let rect_x1 = rect.x
+                let rect_x2 = rect.x + rect.width
+                let rect_y1 = rect.y
+                let rect_y2 = rect.y + rect.height
+
+                let new_x1 = x
+                let new_x2 = x + ancho
+                let new_y1 = y
+                let new_y2 = y + alto
+
+                /*Borde izquierdo dentro de rectangulo*/
+                let newLeftIn =(new_x1 >= rect_x1 && new_x1 < rect_x2) 
+                
+                /*Borde derecho dentro de rectangulo*/
+                let newRightIn =(new_x2 <= rect_x2 && new_x2 > rect_x1)
+
+                /*Borde superior dentro de rectangulo*/
+                let newTopIn = (new_y1 >= rect_y1 && new_y1 < rect_y2)
+                
+                /*Borde inferior dentro de rectangulo*/
+                let newBottomIn =(new_y2 <= rect_y2 && new_y2 > rect_y1)
+
+                let TopLeftIn = newLeftIn && newTopIn
+                let TopRigthIn = newRightIn && newTopIn
+                let BottomLeftIn = newLeftIn && newBottomIn
+                let BottomRightIn = newLeftIn && newBottomIn
+
+                console.log(TopLeftIn,TopRigthIn,BottomLeftIn,BottomRightIn)
+
+                if(
+                    (TopLeftIn || TopRigthIn || BottomLeftIn || BottomRightIn) //si hay alguna esquina dentro
+                ){
+                    console.log(`El rectangulo X:${x} Y:${y} Width:${ancho} Height:${alto} SI esta superpuesto con ningun otro objeto!!!`)
+                    return true;                    
+                }
+                
+
+            }
+            //si no cayó dentro de ningún if, es porque no está superpuesto con ningún rectángulo
+            console.log(`El rectangulo X:${x} Y:${y} Width:${ancho} Height:${alto} no esta superpuesto con ningun otro objeto.`)
+
+            return false;
         }
 
         function getInputValue(name) {
