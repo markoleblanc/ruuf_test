@@ -43,6 +43,15 @@
             text-align: center;
             align-items: center;
         }
+
+        .normal {
+            border: 1px solid blue;
+        }
+
+        .rotado {
+            border: 1px dashed rgb(255, 94, 0);
+
+        }
     </style>
     </style>
 </head>
@@ -94,6 +103,10 @@
     <script>
 
         function limpiar() {
+            const paneles = document.querySelectorAll('.panel');
+            paneles.forEach(panel => {
+                panel.remove();
+            });
             document.getElementById('respuesta').innerHTML = ''
         }
 
@@ -117,10 +130,18 @@
             for (let y = 0; y < Math.floor(techo_alto/panel_alto); y++) {
                 // Veo cuantos Paneles caben en el ancho del techo
                 for (let x = 0; x < Math.floor(techo_ancho/panel_ancho); x++) {
-                    paneles.push({ x: x * panel_ancho , y: y * panel_alto, width: panel_ancho, height: panel_alto, num: panelNum++ });
+                    paneles.push({ x: x * panel_ancho , y: y * panel_alto, width: panel_ancho, height: panel_alto, num: panelNum++ ,orientacion : 'normal'});
                 }
             }
             console.log(paneles)
+
+            // Veo cuantos Paneles Rotados caben en el alto del techo
+            for (let y = 0; y < Math.floor(techo_alto/panel_ancho); y++) {
+                // Veo cuantos Paneles Rotados caben en el ancho del techo
+                for (let x = 0; x < Math.floor(techo_ancho/panel_alto); x++) {
+                    paneles.push({ x: x * panel_alto , y: y * panel_ancho, width: panel_alto, height: panel_ancho, num: panelNum++ ,orientacion : 'rotado'});
+                }
+            }
 
             const techo = document.getElementById('techo');
             techo.innerHTML = '';
@@ -131,12 +152,12 @@
             // Dibujar los paneles solares
             for (let panel of paneles) {
                 const div = document.createElement('div');
-                div.className = 'panel';
+                div.className = 'panel '+ panel.orientacion;
                 div.style.width = `${panel.width * 100}px`;
                 div.style.height = `${panel.height * 100}px`;
                 div.style.left = `${panel.x * 100}px`;
                 div.style.top = `${panel.y * 100}px`;
-                div.textContent = panel.num;
+                div.textContent = panel.num + ' (' + panel.orientacion+')';
                 techo.appendChild(div);
             }
         
